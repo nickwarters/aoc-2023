@@ -13,14 +13,11 @@ function solve_day_one(input: string, replace: boolean = false): number {
 
         if (replace) {
             for (let i = 0; i < subs.length; i++) {
-                console.log(`attemping to replace ${subs[i]} with ${subs[i].substring(0, 1) + String(i + 1) + subs[i].substring(subs[i].length - 1)}`)
                 line = line.replaceAll(subs[i], subs[i].substring(0, 1) + String(i + 1) + subs[i].substring(subs[i].length - 1))
             }
         }
 
         const digits = Array.from(line.matchAll(/\d/g))
-
-        console.log(`linePre=${linePre}, line='${line}', digits=${digits}`)
 
         total += Number(String(digits[0]) + String(digits[digits.length - 1]))
     }
