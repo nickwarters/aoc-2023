@@ -1,5 +1,6 @@
 import re
 
+
 def main():
     input_text = open(0).read()
     print(f'part one: {solve_part_one(input_text)}')
