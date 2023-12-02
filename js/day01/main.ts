@@ -1,4 +1,4 @@
-const fs = require('fs')
+import fs from 'fs'
 
 function solve_day_one(input: string, replace: boolean = false): number {
     let total = 0
