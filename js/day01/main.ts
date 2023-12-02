@@ -31,7 +31,6 @@ function solve_day_two(input: string): number {
 
 function main() {
     const data = fs.readFileSync(0, 'utf-8')
-    console.log(data)
     const part_one_result = solve_day_one(String(data))
     const part_two_result = solve_day_two(String(data))
     console.log(`part one: ${part_one_result}`)
