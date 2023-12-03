@@ -1,139 +1,143 @@
 import fs from 'fs'
 
 type S = {
-	row: number
-	column: number
-	value: string
+    row: number
+    column: number
+    value: string
 }
 
 type N = {
-	value: number
-	row: number
-	start: number
-	end: number
-	isValid: boolean
+    value: number
+    row: number
+    start: number
+    end: number
 }
 
 function solve_day_one(input: string): number {
-	let total = 0
+    let total = 0
 
-	const grid = input.split('\n')
+    const grid = input.split('\n')
 
-	const symbols: S[] = []
-	const numbers: N[] = []
+    const symbols: S[] = []
+    const numbers: N[] = []
 
-	const allNumbers = '1234567890'
+    const allNumbers = '1234567890'
 
-	const directions = [
-		[-1, 0],
-		[-1, -1],
-		[-1, 1],
-		[0, -1],
-		[0, 1],
-		[1, -1],
-		[1, 0],
-		[1, 1],
-	]
+    grid.forEach((row, r, rows) => {
+        let inNum = false
+        let num = ''
+        let numStart = 0
+        let isValid = false
 
-	total = input
-		.split('\n')
-		.reduce((numbers, row, r, rows) => {
-			let inNum = false
-			let num = ''
-			let numStart = 0
-			let isValid = false
+        row.split('').forEach((ch, c) => {
+            const isNumber = allNumbers.includes(ch)
+            if (isNumber) {
+                num += ch
+                if (!inNum) {
+                    numStart = c
+                }
+                inNum = true
+            } else {
+                inNum = false
+            }
 
-			row.split('').forEach((ch, c) => {
-				const isNumber = allNumbers.includes(ch)
-				if (isNumber) {
-					num += ch
-					if (!inNum) {
-						numStart = c
-					}
-					inNum = true
-				} else {
-					inNum = false
-				}
+            if ((c == grid[0].length - 1 && isNumber) || (!isNumber && num != '')) {
+                numbers.push({
+                    value: Number(num),
+                    row: r,
+                    start: numStart,
+                    end: c - 1,
+                })
 
-				if (!isValid && (isNumber || num !== '')) {
-					let sr: number
-					let sc: number
+                num = ''
+                numStart = 0
+                isValid = false
+            }
+        })
+    })
+    total = numbers
+        .filter(n => {
+            let isValid = false
 
-					for (const d of directions) {
-						sr = r + d[0]
-						sc = c + d[1]
-						if (sr < 0 || sr >= rows.length || sc < 0 || sc >= row.length) {
-							continue
-						}
+            for (let sr = n.row - 1; sr < n.row + 2 && sr < grid.length; sr++) {
+                for (let sc = n.start - 1; sc < n.end + 2; sc++) {
+                    if (sr < 0 || sc < 0) {
+                        continue
+                    }
+                    if (grid[sr][sc] !== '.' && !allNumbers.includes(grid[sr][sc])) {
+                        isValid = true
+                    }
+                }
+            }
+            return isValid
+        })
+        .reduce((sum, n) => sum + n.value, 0)
 
-						if (rows[sr][sc] !== '.' && !allNumbers.includes(rows[sr][sc])) {
-							isValid = true
-							// console.log({ r, c, ch, sr, sc, sym: rows[sr][sc] })
-							break
-						}
-					}
-				}
-
-				if (!isNumber && num != '') {
-					numbers.push({
-						value: Number(num),
-						row: r,
-						start: numStart,
-						end: c - 1,
-						isValid,
-					})
-
-					num = ''
-					numStart = 0
-					isValid = false
-				}
-			})
-
-			return numbers
-		}, numbers)
-		.filter((n) => {
-			// console.log(n)
-			return n.isValid
-		})
-		.reduce((sum, n) => sum + n.value, 0)
-
-	// console.log(
-	// 	numbers.filter(
-	// 		(n) =>
-	// 			symbols.filter(
-	// 				(s) =>
-	// 					!(
-	// 						s.row >= n.row - 1 &&
-	// 						s.row <= n.row + 1 &&
-	// 						s.column >= n.start - 1 &&
-	// 						s.column <= n.end + 1
-	// 					)
-	// 			).length > 0
-	// 	)
-	// )
-
-	// total = numbers
-	// 	.filter(
-	// 		(n) =>
-	// 			symbols.filter((s) => {
-	// 				return (
-	// 					s.row >= n.row - 1 &&
-	// 					s.row <= n.row + 1 &&
-	// 					s.column >= n.start - 1 &&
-	// 					s.column <= n.end + 1
-	// 				)
-	// 			}).length > 0
-	// 	)
-	// 	.reduce((t, n) => {
-	// 		console.log(n)
-	// 		return t + n.value
-	// 	}, 0)
-
-	return total
+    return total
 }
 
 function solve_day_two(input: string): number {
     let total = 0
+
+    const grid = input.split('\n')
+
+    const symbols: S[] = []
+    const numbers: N[] = []
+
+    const allNumbers = '1234567890'
+
+    grid.forEach((row, r, rows) => {
+        let inNum = false
+        let num = ''
+        let numStart = 0
+
+        row.split('').forEach((ch, c) => {
+            const isNumber = allNumbers.includes(ch)
+            if (isNumber) {
+                num += ch
+                if (!inNum) {
+                    numStart = c
+                }
+                inNum = true
+            } else {
+                inNum = false
+                if (ch === '*') {
+                    symbols.push({
+                        row: r,
+                        column: c,
+                        value: '*',
+                    })
+                }
+            }
+
+            if ((c == grid[0].length - 1 && isNumber) || (!isNumber && num != '')) {
+                numbers.push({
+                    value: Number(num),
+                    row: r,
+                    start: numStart,
+                    end: c - 1,
+                })
+
+                num = ''
+                numStart = 0
+            }
+        })
+    })
+
+    total = symbols.reduce((t, s) => {
+        const g_nums = []
+
+        for (const n of numbers) {
+            if (n.row - 1 <= s.row && n.row + 1 >= s.row && n.start - 1 <= s.column && n.end + 1 >= s.column) {
+                g_nums.push(n)
+            }
+        }
+
+        if (g_nums.length == 2) {
+            t += g_nums[0].value * g_nums[1].value
+        }
+        return t
+    }, 0)
 
     return total
 }
