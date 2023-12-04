@@ -207,16 +207,16 @@ def setup(args: argparse.Namespace) -> None:
     test_input_path = os.path.join(INPUT_PATH, f'day{str(args.day).zfill(2)}_test.txt')
 
     for lang_path in (PY_DIR, TS_DIR, GO_DIR):
-        lang_day_path = os.path.join(lang_path, f'day{str(args.day)}')
+        lang_day_path = os.path.join(lang_path, f'day{str(args.day).zfill(2)}')
         if not os.path.exists(lang_day_path):
             os.mkdir(lang_day_path)
 
     for lang_path, file_ext, template in (
             (PY_DIR, 'py', PY_CODE_TEMPLATE),
             (TS_DIR, 'ts', TS_CODE_TEMPLATE),
-            (GO_DIR, 'go', GO_CODE_TEMPLATE)
+            (os.path.join(GO_DIR, 'cmd'), 'go', GO_CODE_TEMPLATE)
     ):
-        code_path = os.path.join(lang_path, f'day{str(args.day)}', f'main.{file_ext}')
+        code_path = os.path.join(lang_path, f'day{str(args.day).zfill(2)}', f'main.{file_ext}')
         if not os.path.exists(code_path) or not open(code_path).read():
             with open(code_path, 'w') as file:
                 file.write(template)
