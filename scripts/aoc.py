@@ -203,6 +203,18 @@ def run(args: argparse.Namespace) -> None:
 
 
 def setup(args: argparse.Namespace) -> None:
+
+    if args.year == TODAY.year and args.day > TODAY.day + 2:
+        raise ValueError('looking too far ahead there, bro')
+
+    if args.year == TODAY.year and args.day == TODAY.day + 1:
+        time_to_wait = (
+                datetime.datetime(args.year, 12, args.day, 5, 0, 10, 0, datetime.timezone.utc)
+                - datetime.datetime.now(datetime.timezone.utc)
+        )
+        print(f'waiting {str(time_to_wait)}')
+        time.sleep(time_to_wait.seconds)
+
     input_path = os.path.join(INPUT_PATH, f'day{str(args.day).zfill(2)}.txt')
     test_input_path = os.path.join(INPUT_PATH, f'day{str(args.day).zfill(2)}_test.txt')
 
