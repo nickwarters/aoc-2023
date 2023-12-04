@@ -67,8 +67,7 @@ function main() {
 }
 
 main()'''
-GO_CODE_TEMPLATE = r'''\
-package main
+GO_CODE_TEMPLATE = r'''package main
 
 import (
     "fmt"
