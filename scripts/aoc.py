@@ -99,7 +99,7 @@ func main() {
 
     input := string(stdin)
 
-    part_one_result := solve_part_one(input, false)
+    part_one_result := solve_part_one(input)
     part_two_result := solve_part_two(input)
     fmt.Printf("part one: %d\n", part_one_result)
     fmt.Printf("part two: %d\n", part_two_result)
