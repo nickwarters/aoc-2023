@@ -29,8 +29,42 @@ function solve_day_one(input: string): number {
 }
 
 function solve_day_two(input: string): number {
-    let total = 0
-    return total
+    const cards = input.trim().split('\n')
+    const cardCount: { [key: number]: number } = {}
+    let cardId = 0
+    while (cardId < cards.length) {
+        cardId++
+        if (!(cardId in cardCount)) {
+            cardCount[cardId] = 0
+        }
+        cardCount[cardId]++
+        const card = cards[cardId - 1]
+        let cardTotal = 0
+        const [winners, have] = card
+            .replace(/Card \d{1,}: /, '')
+            .split(' | ')
+            .map(s => s.split(' '))
+        let n = 0
+        while (n < cardCount[cardId]) {
+            n++
+            have.forEach(h => {
+                if (h === '') {
+                    return
+                }
+                if (winners.includes(h)) {
+                    cardTotal++
+                }
+            })
+            for (let i = 1; i < cardTotal + 1; i++) {
+                if (!(cardId + i in cardCount)) {
+                    cardCount[cardId + i] = 0
+                }
+                cardCount[cardId + i]++
+            }
+            cardTotal = 0
+        }
+    }
+    return Object.values(cardCount).reduce((t, v) => t + v, 0)
 }
 
 function main() {
