@@ -218,7 +218,7 @@ def setup(args: argparse.Namespace) -> None:
     input_path = os.path.join(INPUT_PATH, f'day{str(args.day).zfill(2)}.txt')
     test_input_path = os.path.join(INPUT_PATH, f'day{str(args.day).zfill(2)}_test.txt')
 
-    for lang_path in (PY_DIR, TS_DIR, GO_DIR):
+    for lang_path in (PY_DIR, TS_DIR, os.path.join(GO_DIR, 'cmd')):
         lang_day_path = os.path.join(lang_path, f'day{str(args.day).zfill(2)}')
         if not os.path.exists(lang_day_path):
             os.mkdir(lang_day_path)
