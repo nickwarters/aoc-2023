@@ -189,6 +189,7 @@ def run(args: argparse.Namespace) -> None:
         raise ValueError(f'invalid language! expected {VALID_LANGS}, got="{args.lang}"')
 
     all_commands = get_all_commands(args.lang, args.test, args.day, args.actual)
+    subprocess.run(['clear'])
     for command, input_path in all_commands:
         if input_path == '':
             subprocess.run(command)
