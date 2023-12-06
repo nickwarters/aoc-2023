@@ -42,23 +42,25 @@ def map_to_many(seed_ranges: List[Tuple[int, int]], maps: List[str]) -> List[Tup
     mapped = []
     for row in maps:
         ds, ss, r = list(map(int, row.split(' ')))
+        se = ss + r
         new = []
-        # print(f'{seeds=}')
         while seed_ranges:
             s, e = seed_ranges.pop()
             b = (s, min(e, ss))
-            i = (max(s, ss), min(ds + r, e))
-            a = (max(ds + r, s), e)
+            i = (max(s, ss), min(se, e))
+            a = (max(se, s), e)
+            
+            if i[1] > i[0]:
+                mapped.append((i[0] + ds - ss, i[1] + ds - ss))
+
             if b[0] < b[1]:
-                # print(f'{s=}, {e=}, {row=}, adding {b} to new')
-                new.append(b)  
-            if i[0] > i[1]:
-                # print(f'{s=}, {e=}, {row=}, adding {(i[0] - ss + ds, i[1] - ss + ds)} to output of section')
-                mapped.append((i[0] - ss + ds, i[1] - ss + ds))
+                new.append(b)
+
             if a[0] < a[1]:
-                # print(f'{s=}, {e=}, {row=}, adding {a} to new')
                 new.append(a)
+
         seed_ranges = new
+
     return mapped + seed_ranges
 
 
@@ -66,18 +68,16 @@ def solve_part_two(input_text: str) -> int:
     seedsies = [int(x) for x in input_text.split('\n\n')[0].replace('seeds: ', '').split(' ')]
     seeds = []
     for i in range(0, len(seedsies), 2):
-        seeds.append((seedsies[i], seedsies[i] + seedsies[i + 1]))
-    
+        seeds.append((seedsies[i], seedsies[i + 1]))
+
     sections = [x.splitlines()[1:] for x in input_text.split('\n\n')[1:]]
     dests = []
     for s, c in seeds:
         start = [(s, s+c)]
         for section in sections:
             start = map_to_many(start, section)
-            print(f'{dests}')
-            dests.append(min(dests)[0])
+        dests.append(min(start)[0])
 
-    
     return min(dests)
 
 
