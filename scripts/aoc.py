@@ -241,7 +241,7 @@ def setup(args: argparse.Namespace) -> None:
         raise requests.RequestException('Could not get input')
 
     with open(input_path, 'w') as file:
-        file.write(r.text)
+        file.write(r.text.rstrip())
 
     with open(test_input_path, 'w') as file:
         file.write('')
@@ -257,14 +257,14 @@ def submit(args: argparse.Namespace) -> None:
 
     for line in r.text.splitlines():
         if GOOD_ANSWER_KEY in line:
-            print(line)
+            print(GOOD_ANSWER_KEY)
             return
         if TOO_RECENT_KEY in line:
-            print(line)
+            print(TOO_RECENT_KEY)
             assert False
         for k in BAD_ANSWER_KEYS:
             if k in line:
-                print(line)
+                print(k)
                 return
 
     print('Bad request!')
@@ -288,6 +288,12 @@ def main() -> None:
     setup_ap = subparser.add_parser('setup')
     setup_ap.add_argument('--day', action='store', type=int, default=TODAY.day)
     setup_ap.add_argument('--year', action='store', type=int, default=TODAY.year)
+
+    setup_ap = subparser.add_parser('submit')
+    setup_ap.add_argument('--day', action='store', type=int, default=TODAY.day)
+    setup_ap.add_argument('--year', action='store', type=int, default=TODAY.year)
+    setup_ap.add_argument('--part', action='store', type=int, default=1)
+    setup_ap.add_argument('--answer', action='store')
     args = ap.parse_args()
 
     match args.subcommand:
