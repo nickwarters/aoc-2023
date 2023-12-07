@@ -91,16 +91,16 @@ def solve_part_two(input_text: str) -> int:
                     t = 'f'
             case (3, 3):
                 if 'J' in counter:
-                    if counter['J'] == 1:
-                        t = '4'
-                    else:
-                        t = '3'
+                    t = '4'
                 else:
                     t = '3'
 
             case (2, 3):
                 if 'J' in counter:
-                    t = '4'
+                    if counter['J'] == 1:
+                        t = 'f'
+                    else:
+                        t = '4'
                 else:
                     t = '2'
 
