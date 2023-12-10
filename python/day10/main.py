@@ -140,7 +140,59 @@ def solve_part_one(input_text: str) -> int:
 
 def solve_part_two(input_text: str) -> int:
     total = 0
+    seen = set()
 
+    grid = input_text.splitlines()
+    START = 'S'
+    start_pos = None
+    for r, row in enumerate(grid):
+        for c in range(0, len(row)):
+            if row[c] == START:
+                start_pos = (r, c)
+                break
+   
+    current_char = None
+    prev_pos = start_pos
+
+    start_paths = get_possible_paths(grid, start_pos, prev_pos)
+    start_c = None
+    if start_paths[0][0] == start_paths[1][0]:
+        start_c = '-' if start_paths[0][0] == 0 else '|'
+    elif start_paths[0][0] < start_paths[1][0]:
+        start_c = 'L' if start_paths[0][1] == 1 else 'J'
+    else:
+        start_c = 'F' if start_paths[0][1] == 1 else '7'
+
+    assert start_c is not None
+
+    while current_char != START:
+        
+        paths = get_possible_paths(grid, start_pos, prev_pos)
+        
+        prev_pos = start_pos
+        seen.add(prev_pos)
+        start_pos = paths[0]
+        current_char = grid[start_pos[0]][start_pos[1]]
+        
+
+    for r, row in enumerate(grid):
+        row = row.split()
+        for c in range(0, len(row)):
+            if not (r, c) in seen:
+                row[c] = '.'
+
+        for c in range(0, len(row)):
+            if (r, c) in seen:
+                continue
+            count1 = row[:c].count('L') + row[:c].count('|') + row[:c].count('J')
+           
+            if count1 % 2 == 0:
+                continue
+
+            total += 1
+
+    
+    
     return total
 
 if __name__ == '__main__':
