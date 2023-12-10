@@ -175,24 +175,22 @@ def solve_part_two(input_text: str) -> int:
         current_char = grid[start_pos[0]][start_pos[1]]
         
 
+    check_for = 'L|J'
     for r, row in enumerate(grid):
-        row = row.split()
-        for c in range(0, len(row)):
-            if not (r, c) in seen:
-                row[c] = '.'
-
+        
         for c in range(0, len(row)):
             if (r, c) in seen:
                 continue
-            count1 = row[:c].count('L') + row[:c].count('|') + row[:c].count('J')
-           
-            if count1 % 2 == 0:
-                continue
+            
+            count = 0
+            for c2, x in enumerate(row[:c]):
+                if (r, c2) in seen and row[c2] in check_for:
+                    count += 1
 
-            total += 1
+            matches = [(r,c2) for c2, x in enumerate(row[:c]) if (not (r, c2)  in seen) and row[c2] in check_for]
+            
+            total += int(count % 2 == 1)
 
-    
-    
     return total
 
 if __name__ == '__main__':
