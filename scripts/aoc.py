@@ -33,7 +33,7 @@ def main():
 
 def solve_part_one(input_text: str) -> int:
     total = 0
-	return total
+    return total
 
 
 def solve_part_two(input_text: str) -> int:
