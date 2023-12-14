@@ -69,25 +69,29 @@ def solve_part_two(input_text: str) -> int:
             break
 
         for d in ((-1, 0), (0, -1), (1, 0), (0, 1)):
-            start_r = 0 if d[0] <= 0 else len(grid) - 1
-            end_r = len(grid) if d[0] <= 0 else -1
-            start_c = 0 if d[1] <= 0 else len(grid[0]) - 1
-            end_c = len(grid[0]) if d[1] <= 0 else - 1
-            for r in range(start_r, end_r):
-                for c in range(start_c, end_c):
+            rows = list(range(len(grid)) if d[0] <= 0 else reversed(range(len(grid))))
+            cols = list(range(len(grid[0])) if d[0] <= 0 else reversed(range(len(grid[0]))))
+            for r in rows:
+                for c in cols:
                     grid = find_new_position(grid, r, c, d)
+
+            print(f'after {d}')
+            print(f'{rows=}, {cols=}')
+            printgrid(grid)
         
         count += 1
         if str(grid) in seen:
             break
-        print(f'AFTER {count}')
-        printgrid(grid)
+        # print(f'AFTER {count}')
+        # printgrid(grid)
         seen.append(str(grid))
 
     print(f'{count=} to make a loop')
     print(f'{1000000000 % count=}, {len(seen)}')
-    counter = Counter([r for r, row in enumerate(seen[(1000000000 % count) - 1]) for c in row if c == 'O'])
-    total = sum([(len(grid) - k) * v for k, v in counter.items()])
+    entry = seen[(1000000000 % count) + 1]
+    counts = [r.count('O') * (len(entry) - i) for i, r in enumerate(entry)]
+    print(f'{counts=}')
+    total = sum(counts)
 
     return total
 
