@@ -34,58 +34,39 @@ def solve_part_one(input_text: str) -> int:
     return total
 
 
-def find_new_position(grid: List[List[str]], r: int, c: int, d: Tuple[int, int]) -> List[List[str]]:
-    if grid[r][c] in ('#', '.'):
-        return grid
-    new_pos = [r + d[0], c + d[1]]
-    while True:
-        # print(f'({r},{c}) -> {new_pos=}')
-        if new_pos[0] < 0 or new_pos[0] == len(grid) or new_pos[1] < 0 or new_pos[1] == len(grid[0]) or grid[new_pos[0]][new_pos[1]] in ('#', 'O'):
-            grid[r][c] = '.'
-            # print(f'moving ({r},{c}) -> ({new_pos[0] - d[0]}, {new_pos[1] - d[1]})')
-            grid[new_pos[0] - d[0]][new_pos[1] - d[1]] = 'O'
-            break
-
-        new_pos[0] += d[0]
-        new_pos[1] += d[1]
+def find_new_position(grid: Tuple) -> Tuple:
+    for _ in range(4):
+        grid = tuple(map(''.join, zip(*grid)))
+        grid = tuple('#'.join(''.join(sorted(list(g), reverse=True)) for g in row.split('#')) for row in grid)
+        grid = tuple(r[::-1] for r in grid)
     return grid
 
-
-def printgrid(grid: List[List[str]]) -> None:
-    for row in grid:
-        print(row)
-    print('------')
 
 
 def solve_part_two(input_text: str) -> int:
     total = 0
-    grid = list(list(line) for line in input_text.splitlines())
-    seen = {}
-    seen_ind = []
+    grid = tuple(input_text.splitlines())
+    seen = {grid}
+    seen_ind = [grid]
     count = 0
-    
+
     while True:
 
-        for d in ((-1, 0), (0, -1), (1, 0), (0, 1)):
-            rows = list(range(len(grid)) if d[0] <= 0 else reversed(range(len(grid))))
-            cols = list(range(len(grid[0])) if d[1] <= 0 else reversed(range(len(grid[0]))))
-            for r in rows:
-                for c in cols:
-                    grid = find_new_position(grid, r, c, d)
+        grid = find_new_position(grid)
 
         count += 1
-        if str(grid) in seen_ind:
+        if grid in seen:
             break
         # printgrid(grid)
-        seen[count - 1] = '\n'.join([''.join(row) for row in grid])
-        seen_ind.append(str(grid))
+        seen.add(grid)
+        seen_ind.append(grid)
 
-    first = seen_ind.index(str(grid))
+    first = seen_ind.index(grid)
     cycle = count - first
-    index = (1000000000 - first) % cycle + cycle
+    index = (1000000000 - first) % cycle + first
 
-    print(f'{first=}, {cycle=}, {index=}')
-    entry = seen[int(index) - 1].splitlines()
+    print(f'{first=}, {cycle=}, {count=}, {index=}')
+    entry = seen_ind[index]
     counts = [r.count('O') * (len(entry) - i) for i, r in enumerate(entry)]
     total = sum(counts)
 
