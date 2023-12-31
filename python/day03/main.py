@@ -1,4 +1,5 @@
 import re
+from typing import Generator, Tuple
 
 def main():
     input_text = open(0).read()
@@ -6,11 +7,23 @@ def main():
     print(f'part one: {solve_part_one(input_text)}')
     print(f'part two: {solve_part_two(input_text)}')
 
+
+def get_neighbours_8(x: int, y: int) -> Generator[Tuple[int, int], None, None]:
+    for xd in (-1, 0, 1):
+        for yd in (-1, 0, 1):
+            if xd == yd == 0:
+                continue
+            yield x + xd, y + yd
+
+def get_neighbours_4(x: int, y: int) -> Generator[Tuple[int, int], None, None]: 
+    yield x - 1, y
+    yield x, y - 1
+    yield x, y + 1
+    yield x + 1, y
+
+
 def solve_part_one(input_text: str):
     grid = input_text.split('\n')
-    directions = (
-        (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)
-    )
     total = 0
     for r, row in enumerate(grid):
         matches = re.compile(r'\d{1,}').finditer(row)
@@ -19,10 +32,10 @@ def solve_part_one(input_text: str):
             for m_c in range(m.start(), m.end()):
                 if match_used:
                     break
-                for d in directions:
-                    if (r == 0 and d[0] == -1) or (r == len(grid) - 1 and d[0] == 1) or (m_c == 0 and d[1] == -1) or (m_c == len(row) -1 and d[1] == 1):
+                for nr, nc in get_neighbours_8(r, m_c):
+                    if nr < 0 or nr >= len(grid) or nc < 0 or nc >= len(row):
                         continue
-                    x: str = grid[r + d[0]][m_c + d[1]] 
+                    x: str = grid[nr][nc] 
                     if x != '.' and not x.isdigit():
                         total += int(m.group(0))
                         match_used = True

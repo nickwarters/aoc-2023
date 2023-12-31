@@ -26,9 +26,16 @@ def solve_part_one(input_text: str) -> int:
     max_c = 0
 
     for r, c in coords:
+        if r < min_r: 
+            min_r = r
+        if r > max_r: 
+            max_r = r
+        if c < min_c: 
+            min_c = c
+        if c > max_c: 
+            max_c = c
 
-
-    print(f'{coords=}, {total=}')
+    print(f'{min_r=}, {max_r=}, {min_c=}, {max_c=}')
 
     return total
 
